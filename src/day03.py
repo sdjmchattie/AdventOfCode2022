@@ -21,7 +21,12 @@ class Day03:
         return [item for item in comp_1 if item in comp_2][0]
 
     def process_input(self):
-        self.priorities = list(map(lambda backpack: Day03.priority(Day03.find_dup_item(backpack)), self.raw_input))
+        self.priorities = list(
+            map(
+                lambda backpack: Day03.priority(Day03.find_dup_item(backpack)),
+                self.raw_input,
+            )
+        )
 
     def part1(self):
         print()

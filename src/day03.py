@@ -15,9 +15,9 @@ class Day03:
         return priority
 
     def find_dup_item(backpack):
-        half = int(len(backpack) / 2)
+        half = len(backpack) // 2
         comp_1 = backpack[:half]
-        comp_2 = backpack[-half:]
+        comp_2 = backpack[half:]
 
         return [item for item in comp_1 if item in comp_2][0]
 

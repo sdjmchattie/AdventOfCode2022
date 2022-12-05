@@ -15,7 +15,7 @@ INITIAL_STACKS = [
     ["L", "D", "T", "R", "H", "P", "F", "S"],
 ]
 
-INSTUCTION_REGEX = re.compile(r"move (\d+) from (\d+) to (\d+)")
+INSTRUCTION_REGEX = re.compile(r"move (\d+) from (\d+) to (\d+)")
 
 
 class Day05:
@@ -27,7 +27,7 @@ class Day05:
         # TODO parse the stacks from input
         self.initial_stacks = INITIAL_STACKS.copy()
         self.instructions = list(
-            map(lambda line: list(map(int, INSTUCTION_REGEX.match(line).groups())), self.raw_input[10:])
+            map(lambda line: list(map(int, INSTRUCTION_REGEX.match(line).groups())), self.raw_input[10:])
         )
 
     def part1(self):

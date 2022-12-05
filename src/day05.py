@@ -50,9 +50,12 @@ class Day05:
         stacks = deepcopy(self.initial_stacks)
 
         for instruction in self.instructions:
-            for _ in range(instruction[0]):
-                moved = stacks[instruction[1] - 1].pop()
-                stacks[instruction[2] - 1].append(moved)
+            boxes_to_move = instruction[0]
+            from_stack = stacks[instruction[1] - 1]
+            to_stack = stacks[instruction[2] - 1]
+
+            moved = list(map(lambda _: from_stack.pop(), range(boxes_to_move)))
+            to_stack.extend(moved)
 
         return stacks
 
@@ -64,10 +67,8 @@ class Day05:
             from_stack = stacks[instruction[1] - 1]
             to_stack = stacks[instruction[2] - 1]
 
-            moved = from_stack[-boxes_to_move:]
-            for _ in range(boxes_to_move):
-                from_stack.pop()
-            to_stack.extend(moved)
+            moved = list(map(lambda _: from_stack.pop(), range(boxes_to_move)))
+            to_stack.extend(reversed(moved))
 
         return stacks
 

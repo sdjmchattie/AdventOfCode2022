@@ -24,11 +24,13 @@ class Day05:
         self.process_input()
 
     def process_input(self):
-        # TODO parse the stacks from input
-        self.initial_stacks = INITIAL_STACKS.copy()
-        self.instructions = list(
-            map(lambda line: list(map(int, INSTRUCTION_REGEX.match(line).groups())), self.raw_input[10:])
-        )
+        input_split_index = self.raw_input.index("")
+
+        stacks = self.raw_input[: input_split_index - 1]  # Drop column numbering
+        self.parse_stacks(stacks)
+
+        moves = self.raw_input[input_split_index + 1 :]
+        self.instructions = list(map(lambda line: list(map(int, INSTRUCTION_REGEX.match(line).groups())), moves))
 
     def part1(self):
         stacks = self.execute_part1()
@@ -45,6 +47,17 @@ class Day05:
         print()
         print("Part 2")
         print(f"  Solution to part 2: {''.join(password)}")
+
+    def parse_stacks(self, raw_input):
+        raw_input.reverse()
+        stacks = list(map(list, raw_input[0][1::4]))
+        for row in raw_input[1:]:
+            for index, box in enumerate(row[1::4]):
+                stacks[index].append(box)
+
+        stacks = list(map(lambda stack: [x for x in stack if x != " "], stacks))
+
+        self.initial_stacks = stacks
 
     def execute_part1(self):
         stacks = deepcopy(self.initial_stacks)

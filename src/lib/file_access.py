@@ -10,4 +10,4 @@ def default_input_file(script_file_path):
 
 def read_input_lines(script_file_path):
     with open(default_input_file(script_file_path), "r") as file:
-        return [line.strip() for line in file.readlines()]
+        return [line.strip("\n") for line in file.readlines()]

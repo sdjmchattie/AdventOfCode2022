@@ -3,18 +3,6 @@ from copy import deepcopy
 
 from lib.file_access import read_input_lines
 
-INITIAL_STACKS = [
-    ["H", "C", "R"],
-    ["B", "J", "H", "L", "S", "F"],
-    ["R", "M", "D", "H", "J", "T", "Q"],
-    ["S", "G", "R", "H", "Z", "B", "J"],
-    ["R", "P", "F", "Z", "T", "D", "C", "B"],
-    ["T", "H", "C", "G"],
-    ["S", "N", "V", "Z", "B", "P", "W", "L"],
-    ["R", "J", "Q", "G", "C"],
-    ["L", "D", "T", "R", "H", "P", "F", "S"],
-]
-
 INSTRUCTION_REGEX = re.compile(r"move (\d+) from (\d+) to (\d+)")
 
 
@@ -50,8 +38,12 @@ class Day05:
 
     def parse_stacks(self, raw_input):
         raw_input.reverse()
-        stacks = list(map(list, raw_input[0][1::4]))
-        for row in raw_input[1:]:
+
+        stacks = []
+        for _ in range((len(raw_input[0]) + 1) // 4):
+            stacks.append([])
+
+        for row in raw_input:
             for index, box in enumerate(row[1::4]):
                 stacks[index].append(box)
 

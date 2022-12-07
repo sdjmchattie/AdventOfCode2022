@@ -33,32 +33,38 @@ class Day07:
 
     def process_input(self):
         self.all_directories = set()
-        self.current_directory = []
+        current_directory = []
         for line in self.raw_input:
             if line == "$ cd ..":
-                self.current_directory.pop()
+                current_directory.pop()
             elif line[:5] == "$ cd ":
                 new_directory = Directory(line[5:])
                 self.all_directories.add(new_directory)
 
-                if len(self.current_directory) > 0:
-                    self.current_directory[-1].add_directory(new_directory)
+                if len(current_directory) > 0:
+                    current_directory[-1].add_directory(new_directory)
 
-                self.current_directory.append(new_directory)
+                current_directory.append(new_directory)
             elif file_match := REGEX_FILE_LISTING.match(line):
-                self.current_directory[-1].add_file(int(file_match.group(1)))
+                current_directory[-1].add_file(int(file_match.group(1)))
+
+        self.dir_sizes = list(map(lambda dir: dir.get_size(), self.all_directories))
 
     def part1(self):
-        dir_sizes = map(lambda dir: dir.get_size(), self.all_directories)
 
         print()
         print("Part 1")
-        print(f"  Solution to part 1: {sum([x for x in dir_sizes if x <= 100000])}")
+        print(f"  Solution to part 1: {sum([x for x in self.dir_sizes if x <= 100000])}")
 
     def part2(self):
+        total_space = max(self.dir_sizes)
+        free_space = 70000000 - total_space
+        needed_space = 30000000 - free_space
+        chosen_directory_size = min([x for x in self.dir_sizes if x >= needed_space])
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {chosen_directory_size}")
 
 
 puzzle = Day07()

@@ -32,14 +32,14 @@ class Day07:
         self.process_input()
 
     def process_input(self):
-        self.all_directories = set()
+        all_directories = set()
         current_directory = []
         for line in self.raw_input:
             if line == "$ cd ..":
                 current_directory.pop()
             elif line[:5] == "$ cd ":
                 new_directory = Directory(line[5:])
-                self.all_directories.add(new_directory)
+                all_directories.add(new_directory)
 
                 if len(current_directory) > 0:
                     current_directory[-1].add_directory(new_directory)
@@ -48,7 +48,7 @@ class Day07:
             elif file_match := REGEX_FILE_LISTING.match(line):
                 current_directory[-1].add_file(int(file_match.group(1)))
 
-        self.dir_sizes = list(map(lambda dir: dir.get_size(), self.all_directories))
+        self.dir_sizes = list(map(lambda dir: dir.get_size(), all_directories))
 
     def part1(self):
 

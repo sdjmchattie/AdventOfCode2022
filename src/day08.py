@@ -45,6 +45,20 @@ class Day08:
 
         return len([tree for tree in self.forest if tree_is_visible(tree)])
 
+    def max_scenic_score(self):
+        def visible_range(trees, max_height):
+            return next((i + 1 for i, e in enumerate(trees) if e >= max_height), len(trees))
+
+        def scenic_score(tree):
+            north_range = visible_range(tree[NORTH], tree[HEIGHT])
+            south_range = visible_range(tree[SOUTH], tree[HEIGHT])
+            east_range = visible_range(tree[EAST], tree[HEIGHT])
+            west_range = visible_range(tree[WEST], tree[HEIGHT])
+
+            return north_range * south_range * east_range * west_range
+
+        return max(map(scenic_score, self.forest))
+
     def part1(self):
         print()
         print("Part 1")
@@ -53,7 +67,7 @@ class Day08:
     def part2(self):
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {self.max_scenic_score()}")
 
 
 puzzle = Day08()

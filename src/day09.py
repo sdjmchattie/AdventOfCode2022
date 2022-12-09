@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from lib.file_access import read_input_lines
 import re
 
@@ -9,78 +10,81 @@ DIR_UP = "U"
 DIR_DOWN = "D"
 
 
+@dataclass
+class Knot:
+    x: int
+    y: int
+
+
 class RopeSimulator:
-    def __init__(self):
-        self._head_x = 0
-        self._head_y = 0
-
-        self._tail_x = 0
-        self._tail_y = 0
-
+    def __init__(self, knots):
+        self._knots = [Knot(0, 0) for _ in range(knots)]
         self._tail_visited_locations = set()
 
     def move(self, direction):
-        if direction == DIR_RIGHT:
-            self._head_x += 1
-        elif direction == DIR_LEFT:
-            self._head_x -= 1
-        elif direction == DIR_UP:
-            self._head_y += 1
-        elif direction == DIR_DOWN:
-            self._head_y -= 1
+        dx, dy = 0, 0
 
-        self._move_tail()
+        if direction == DIR_RIGHT:
+            dx = 1
+        elif direction == DIR_LEFT:
+            dx = -1
+        elif direction == DIR_UP:
+            dy = 1
+        elif direction == DIR_DOWN:
+            dy = -1
+
+        self._knots[0].x += dx
+        self._knots[0].y += dy
+
+        for i in range(1, len(self._knots)):
+            self._move_knot(i)
+
+        tail = self._knots[-1]
+        self._tail_visited_locations.add((tail.x, tail.y))
 
     def number_of_tail_locations(self):
         return len(self._tail_visited_locations)
 
-    def _move_tail(self):
-        if abs(self._head_x - self._tail_x) > 2 or abs(self._head_y - self._tail_y) > 2:
-            raise Exception(
-                f"Something odd has happened.  Head is at ({self._head_x}, {self._head_y}) "
-                f"and tail is at ({self._tail_x}, {self._tail_y})."
-            )
+    def _move_knot(self, index):
+        def movement(value):
+            return min(max(value, -1), 1)
 
-        if self._head_x - self._tail_x == 2:
-            self._tail_x += 1
-            self._tail_y = self._head_y
-        elif self._tail_x - self._head_x == 2:
-            self._tail_x -= 1
-            self._tail_y = self._head_y
-        elif self._head_y - self._tail_y == 2:
-            self._tail_y += 1
-            self._tail_x = self._head_x
-        elif self._tail_y - self._head_y == 2:
-            self._tail_y -= 1
-            self._tail_x = self._head_x
+        previous = self._knots[index - 1]
+        current = self._knots[index]
 
-        self._tail_visited_locations.add((self._tail_x, self._tail_y))
+        if abs(previous.x - current.x) == 2 or abs(previous.y - current.y) == 2:
+            current.x += movement(previous.x - current.x)
+            current.y += movement(previous.y - current.y)
 
 
 class Day09:
     def __init__(self):
         self.raw_input = read_input_lines(__file__)
-        self._simulator = RopeSimulator()
 
-    def process_input(self):
+    def run_steps(self, simulator):
         for line in self.raw_input:
             match = REGEX_INSTRUCTION.match(line)
             direction, distance = match.groups()
             for _ in range(int(distance)):
-                self._simulator.move(direction)
+                simulator.move(direction)
 
     def part1(self):
+        simulator = RopeSimulator(2)
+        self.run_steps(simulator)
+
         print()
         print("Part 1")
-        print(f"  Solution to part 1: {self._simulator.number_of_tail_locations()}")
+        print(f"  Solution to part 1: {simulator.number_of_tail_locations()}")
 
     def part2(self):
+        simulator = RopeSimulator(10)
+        self.run_steps(simulator)
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {simulator.number_of_tail_locations()}")
 
 
 puzzle = Day09()
-puzzle.process_input()
 puzzle.part1()
 puzzle.part2()

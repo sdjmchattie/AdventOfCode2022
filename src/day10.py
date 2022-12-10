@@ -23,13 +23,10 @@ class Day10:
     def render_crt(self):
         for index, sprite_pos in enumerate(self.signal):
             row_index = index % 40
-            if row_index == 0:
-                print()
+            print("⬛" if abs(sprite_pos - row_index) <= 1 else "🟧", end="")
 
-            if abs(sprite_pos - row_index) <= 1:
-                print("⬛️", end="")
-            else:
-                print("⬜️", end="")
+            if row_index == 39:
+                print()
 
     def part1(self):
         sum_of_signals = sum(((40 * i) + 20) * v for i, v in enumerate(self.signal[19::40]))
@@ -41,6 +38,7 @@ class Day10:
     def part2(self):
         print()
         print("Part 2")
+        print()
         self.render_crt()
         print()
 

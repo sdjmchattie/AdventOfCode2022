@@ -10,18 +10,29 @@ class Day10:
 
     def process_input(self):
         next_val = 1
-        self.during_cycle = []
+        self.signal = []
 
         for line in self._raw_input:
             if line == "noop":
-                self.during_cycle.append(next_val)
+                self.signal.append(next_val)
             elif match := PARSING_REGEX.match(line):
                 dval = int(match.group(2))
-                self.during_cycle.extend((next_val, next_val))
+                self.signal.extend((next_val, next_val))
                 next_val += dval
 
+    def render_crt(self):
+        for index, sprite_pos in enumerate(self.signal):
+            row_index = index % 40
+            if row_index == 0:
+                print()
+
+            if abs(sprite_pos - row_index) <= 1:
+                print("⬛️", end="")
+            else:
+                print("⬜️", end="")
+
     def part1(self):
-        sum_of_signals = sum(((40 * i) + 20) * v for i, v in enumerate(self.during_cycle[19::40]))
+        sum_of_signals = sum(((40 * i) + 20) * v for i, v in enumerate(self.signal[19::40]))
 
         print()
         print("Part 1")
@@ -30,7 +41,8 @@ class Day10:
     def part2(self):
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        self.render_crt()
+        print()
 
 
 puzzle = Day10()

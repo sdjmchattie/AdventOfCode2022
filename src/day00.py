@@ -3,8 +3,7 @@ from lib.file_access import read_input_lines
 
 class Day00:
     def __init__(self):
-        self.raw_input = read_input_lines(__file__)
-        self.process_input()
+        self._raw_input = read_input_lines(__file__)
 
     def process_input(self):
         pass
@@ -21,5 +20,6 @@ class Day00:
 
 
 puzzle = Day00()
+puzzle.process_input()
 puzzle.part1()
 puzzle.part2()

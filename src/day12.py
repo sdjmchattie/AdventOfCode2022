@@ -104,9 +104,17 @@ class Day12:
         print(f"  Solution to part 1: {path_length}")
 
     def part2(self):
+        djikstra = GridDijkstra(
+            self._grid,
+            lambda neighbour, source: self._grid[source.y][source.x] - self._grid[neighbour.y][neighbour.x] <= 1,
+            self._e_position,
+            lambda point: self._grid[point.y][point.x] == 0,
+        )
+        path_length = djikstra.run()
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {path_length}")
 
 
 puzzle = Day12()

@@ -55,9 +55,44 @@ class Day16:
         print(f"  Solution to part 1: {best}")
 
     def part2(self):
+        @lru_cache(maxsize=None)
+        def best_relief(valves, opened, time_left):
+            if time_left <= 0:
+                return 0
+
+            relief_if_1_opened = 0 if valves[0].name in opened else valves[0].flow_rate * (time_left - 1)
+            relief_if_2_opened = 0 if valves[1].name in opened or valves[0] == valves[1] else valves[1].flow_rate * (time_left - 1)
+
+            moves_1 = valves[0].adjacent + ((valves[0].name,) if relief_if_1_opened > 0 else ())
+            moves_2 = valves[1].adjacent + ((valves[1].name,) if relief_if_2_opened > 0 else ())
+            move_combos = ((move_1, move_2) for move_1 in moves_1 for move_2 in moves_2)
+
+            max_relief = 0
+            for new_valve_names in move_combos:
+                new_relief = 0
+                newly_opened_1 = ()
+                if valves[0].name == new_valve_names[0]:
+                    newly_opened_1 = (new_valve_names[0],)
+                    new_relief += relief_if_1_opened
+
+                newly_opened_2 = ()
+                if valves[1].name == new_valve_names[1]:
+                    newly_opened_2 = (new_valve_names[1],)
+                    new_relief += relief_if_2_opened
+
+                new_valves = tuple(map(lambda valve: self._valves[valve], new_valve_names))
+                new_opened = tuple(sorted(opened + newly_opened_1 + newly_opened_2))
+
+                max_relief = max(max_relief, new_relief + best_relief(new_valves, new_opened, time_left - 1))
+
+            return max_relief
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+
+        best = best_relief((self._valves["AA"], self._valves["AA"]), (), 26)
+
+        print(f"  Solution to part 2: {best}")
 
 
 puzzle = Day16()

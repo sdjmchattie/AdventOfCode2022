@@ -46,8 +46,7 @@ class Day16:
         """
         Gives all possible paths from a starting point, until time is up,
         opening valves at each point along the path."""
-        if time <= 2:
-            yield (start,)
+        count = 0
 
         for next_valve in self.flowable_valves:
             if next_valve in visited or next_valve == start:
@@ -57,7 +56,11 @@ class Day16:
             time_left_after_opening_valve = time - distance - 1
             if time_left_after_opening_valve >= 1:
                 for path in self.all_paths_from(next_valve, time_left_after_opening_valve, visited.union({start})):
+                    count += 1
                     yield (start,) + path
+
+        if count == 0:
+            yield (start,)
 
     def relief_from_path(self, path, time):
         relief = 0
@@ -78,7 +81,15 @@ class Day16:
     def part2(self):
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+
+        best = 0
+        for my_path in self.all_paths_from("AA", 26):
+            my_relief = self.relief_from_path(my_path, 26)
+            for elephant_path in self.all_paths_from("AA", 26, set(my_path)):
+                elephant_relief = self.relief_from_path(elephant_path, 26)
+                best = max(best, my_relief + elephant_relief)
+
+        print(f"  Solution to part 2: {best}")
 
 
 puzzle = Day16()

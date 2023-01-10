@@ -14,12 +14,9 @@ class Day20:
     def raw_input(self):
         return read_input_lines(__file__)
 
-    def initial_state(self):
-        return [Code(i, int(x)) for i, x in enumerate(self.raw_input)]
-
     def part1(self):
+        state = [Code(i, int(x)) for i, x in enumerate(self.raw_input)]
         size = len(self.raw_input)
-        state = self.initial_state()
         for index in range(size):
             item_to_move = next(filter(lambda code: code.index == index, state))
             cur_index = state.index(item_to_move)
@@ -38,9 +35,26 @@ class Day20:
         print(f"  Solution to part 1: {sum_of_coordinates}")
 
     def part2(self):
+        state = [Code(i, int(x) * 811589153) for i, x in enumerate(self.raw_input)]
+        size = len(self.raw_input)
+        for loop in range(10):
+            for index in range(size):
+                item_to_move = next(filter(lambda code: code.index == index, state))
+                cur_index = state.index(item_to_move)
+                new_index = cur_index + item_to_move.value % (size - 1)
+                new_index = new_index % size + new_index // size
+                new_index = new_index % size
+
+                state.remove(item_to_move)
+                state.insert(new_index, item_to_move)
+
+        zero_item = next(filter(lambda code: code.value == 0, state))
+        zero_index = state.index(zero_item)
+        sum_of_coordinates = reduce(lambda acc, i: acc + state[((i + 1) * 1000 + zero_index) % size].value, range(3), 0)
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {sum_of_coordinates}")
 
 
 puzzle = Day20()

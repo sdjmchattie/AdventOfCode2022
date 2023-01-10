@@ -2,7 +2,7 @@ from functools import cached_property
 from lib.file_access import read_input_lines
 
 
-class Day00:
+class Day19:
     @cached_property
     def raw_input(self):
         return read_input_lines(__file__)
@@ -18,6 +18,6 @@ class Day00:
         print(f"  Solution to part 2: ")
 
 
-puzzle = Day00()
+puzzle = Day19()
 puzzle.part1()
 puzzle.part2()

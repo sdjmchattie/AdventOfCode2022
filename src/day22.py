@@ -42,6 +42,23 @@ class Journey:
                 break
 
     def move(self, distance):
+        raise NotImplementedError()
+
+    def turn(self, direction):
+        if direction == "L":
+            new_direction = self.direction.value - 1
+            if new_direction == -1:
+                new_direction = 3
+        else:
+            new_direction = self.direction.value + 1
+            if new_direction == 4:
+                new_direction = 0
+
+        self.direction = Direction(new_direction)
+
+
+class FlatJourney(Journey):
+    def move(self, distance):
         for _ in range(distance):
             if self.direction == Direction.East:
                 new_row = self.row
@@ -85,18 +102,6 @@ class Journey:
                 self.row = new_row
                 self.column = new_column
 
-    def turn(self, direction):
-        if direction == "L":
-            new_direction = self.direction.value - 1
-            if new_direction == -1:
-                new_direction = 3
-        else:
-            new_direction = self.direction.value + 1
-            if new_direction == 4:
-                new_direction = 0
-
-        self.direction = Direction(new_direction)
-
 
 class Day22:
     @cached_property
@@ -112,7 +117,7 @@ class Day22:
         return self.raw_input[-1]
 
     def part1(self):
-        journey = Journey(self.map, self.directions)
+        journey = FlatJourney(self.map, self.directions)
         journey.follow_journey()
 
         password = 1000 * journey.row + 4 * journey.column + journey.direction.value

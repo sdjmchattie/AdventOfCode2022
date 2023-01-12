@@ -103,6 +103,68 @@ class FlatJourney(Journey):
                 self.column = new_column
 
 
+class CubeJourney(Journey):
+    def move(self, distance):
+        for _ in range(distance):
+            if self.direction == Direction.East:
+                new_row, new_column, new_direction = self.move_east()
+            elif self.direction == Direction.South:
+                new_row, new_column, new_direction = self.move_south()
+            if self.direction == Direction.West:
+                new_row, new_column, new_direction = self.move_west()
+            if self.direction == Direction.North:
+                new_row, new_column, new_direction = self.move_north()
+
+            if self._map[new_row - 1][new_column - 1] == ".":
+                self.row = new_row
+                self.column = new_column
+                self.direction = new_direction
+
+    def move_east(self):
+        if self.row >= 1 and self.row <= 50 and self.column == 150:
+            return 151 - self.row, 100, Direction.West
+        elif self.row >= 51 and self.row <= 100 and self.column == 100:
+            return 50, 50 + self.row, Direction.North
+        elif self.row >= 101 and self.row <= 150 and self.column == 100:
+            return 151 - self.row, 150, Direction.West
+        elif self.row >= 151 and self.row <= 200 and self.column == 50:
+            return 150, self.row - 100, Direction.North
+        else:
+            return self.row, self.column + 1, Direction.East
+
+    def move_south(self):
+        if self.column >= 1 and self.column <= 50 and self.row == 200:
+            return 1, self.column + 100, Direction.South
+        elif self.column >= 51 and self.column <= 100 and self.row == 150:
+            return self.column + 100, 50, Direction.West
+        elif self.column >= 101 and self.column <= 150 and self.row == 50:
+            return self.column - 50, 100, Direction.West
+        else:
+            return self.row + 1, self.column, Direction.South
+
+    def move_west(self):
+        if self.row >= 1 and self.row <= 50 and self.column == 51:
+            return 151 - self.row, 1, Direction.East
+        elif self.row >= 51 and self.row <= 100 and self.column == 51:
+            return 101, self.row - 50, Direction.South
+        elif self.row >= 101 and self.row <= 150 and self.column == 1:
+            return 151 - self.row, 51, Direction.East
+        elif self.row >= 151 and self.row <= 200 and self.column == 1:
+            return 1, self.row - 100, Direction.South
+        else:
+            return self.row, self.column - 1, Direction.West
+
+    def move_north(self):
+        if self.column >= 1 and self.column <= 50 and self.row == 101:
+            return self.column + 50, 51, Direction.East
+        elif self.column >= 51 and self.column <= 100 and self.row == 1:
+            return self.column + 100, 1, Direction.East
+        elif self.column >= 101 and self.column <= 150 and self.row == 1:
+            return 200, self.column - 100, Direction.North
+        else:
+            return self.row - 1, self.column, Direction.North
+
+
 class Day22:
     @cached_property
     def raw_input(self):
@@ -127,9 +189,13 @@ class Day22:
         print(f"  Solution to part 1: {password}")
 
     def part2(self):
+        journey = CubeJourney(self.map, self.directions)
+        journey.follow_journey()
+
+        password = 1000 * journey.row + 4 * journey.column + journey.direction.value
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {password}")
 
 
 puzzle = Day22()

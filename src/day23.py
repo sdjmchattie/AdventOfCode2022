@@ -89,11 +89,17 @@ class Day23:
             elf.make_proposal(elf_locations, self.proposal_order)
 
         all_proposals = [elf.proposed for elf in self.elves if elf.proposed is not None]
+
+        if len(all_proposals) == 0:
+            return False
+
         for elf in self.elves:
             elf.review_proposal(all_proposals)
             elf.apply_proposal()
 
         self.proposal_order.append(self.proposal_order.pop(0))
+
+        return True
 
     def count_sparsity(self):
         xs = [elf.location.x for elf in self.elves]
@@ -115,9 +121,17 @@ class Day23:
         print(f"  Solution to part 1: {self.count_sparsity()}")
 
     def part2(self):
+        self.prepare()
+
+        round_count = 0
+        while True:
+            round_count += 1
+            if not self.execute_round():
+                break
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {round_count}")
 
 
 puzzle = Day23()

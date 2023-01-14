@@ -116,13 +116,12 @@ class Day24:
                 loc,
             }
             possible_locations = {
-                l for l in nearby if l.x > 0 and l.y > 0 and l.x <= self.width and l.y <= self.height or l == self.goal
+                l
+                for l in nearby
+                if l.x > 0 and l.y > 0 and l.x <= self.width and l.y <= self.height or l == self.goal or l == self.start
             }
             new_locations = possible_locations - self.maps[time % len(self.maps)]
             next_locations.update(new_locations)
-
-        if len(next_locations) == 0:
-            next_locations.add(self.start)
 
         return next_locations
 
@@ -139,9 +138,26 @@ class Day24:
         print(f"  Solution to part 1: {time}")
 
     def part2(self):
+        time = 0
+        current_locations = {self.start}
+
+        while self.goal not in current_locations:
+            time += 1
+            current_locations = self.next_locations(current_locations, time)
+
+        current_locations = {self.goal}
+        while self.start not in current_locations:
+            time += 1
+            current_locations = self.next_locations(current_locations, time)
+
+        current_locations = {self.start}
+        while self.goal not in current_locations:
+            time += 1
+            current_locations = self.next_locations(current_locations, time)
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {time}")
 
 
 puzzle = Day24()

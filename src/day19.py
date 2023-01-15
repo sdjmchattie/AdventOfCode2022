@@ -72,8 +72,8 @@ class Blueprint:
     def most_obsidian_robots(self):
         return max([x.obsidian for x in self.robot_costs.values()])
 
-    def optimal_geodes(self):
-        optimal = self._optimal_geodes(24, ResourceCounts(1, 0, 0, 0), ResourceCounts(0, 0, 0, 0))
+    def optimal_geodes(self, alotted_time):
+        optimal = self._optimal_geodes(alotted_time, ResourceCounts(1, 0, 0, 0), ResourceCounts(0, 0, 0, 0))
         print(f"Found optimal geode count {optimal} for blueprint with ID {self.id}")
 
         return optimal
@@ -99,6 +99,14 @@ class Blueprint:
         new_resources = resource_counts.add(robot_counts)
 
         time = time_left - 1
+
+        if "geode" in buildable_robots:
+            return self._optimal_geodes(
+                time,
+                robot_counts.add(ADDITIONAL_ROBOT["geode"], new_resources.subtract(buildable_robots["geode"])),
+                resources,
+            )
+
         max_geodes = 0
         for name, costs in buildable_robots.items():
             robots = robot_counts.add(ADDITIONAL_ROBOT[name])
@@ -122,16 +130,18 @@ class Day19:
         return [Blueprint(desc) for desc in self.raw_input]
 
     def part1(self):
-        quality_levels = [bp.id * bp.optimal_geodes() for bp in self.generate_blueprints()]
+        quality_levels = [bp.id * bp.optimal_geodes(24) for bp in self.generate_blueprints()]
 
         print()
         print("Part 1")
         print(f"  Solution to part 1: {sum(quality_levels)}")
 
     def part2(self):
+        geodes_in_32 = [bp.optimal_geodes(32) for bp in self.generate_blueprints()[0:3]]
+
         print()
         print("Part 2")
-        print(f"  Solution to part 2: ")
+        print(f"  Solution to part 2: {geodes_in_32[0] * geodes_in_32[1] * geodes_in_32[2]}")
 
 
 puzzle = Day19()
